@@ -54,8 +54,27 @@ port_summary %>%
   facet_wrap(~mgt_area, scales = "free_y") +
   theme(strip.background = element_blank())
 
-
-
+# same as above but with legend
+port_summary %>%
+  filter(mgt_area == "East Central",
+         YEAR > 1999) %>%
+  mutate(YEAR = fct_rev(as.factor(YEAR))) %>%
+  ggplot( aes(x = LENGTH_MILLIMETERS, y = YEAR))+
+  geom_density_ridges(
+    aes(fill = paste(YEAR, recruit_status)),
+    alpha = 0.7, color = "white", from = 150, to =200
+  )+
+  scale_fill_cyclical(
+    labels = c('2000 Recruit' = "Recruit", '2000 Post-Recruit'="Post-Recruit"),
+    values = c ("blue", "orange"),
+    name = "Recruit Status", guide = "legend"
+  ) + 
+  scale_y_discrete(expand = c(0.01, 0)) +
+  scale_x_continuous(breaks = seq(0, 200, 10), limits = c(150, 200)) +
+  ylab("Year") +
+  xlab("Carapace Length (mm)") +
+  facet_wrap(~mgt_area, scales = "free_y") +
+  theme(strip.background = element_blank())
   
 port_summary %>% 
   ggplot(aes(LENGTH_MILLIMETERS, YEAR, color = recruit_status, point_color = recruit_status, fill = recruit_status)) +
